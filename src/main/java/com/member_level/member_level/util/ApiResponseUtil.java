@@ -11,7 +11,7 @@ public class ApiResponseUtil {
         response.setData(data);
         response.setErrorCode(errorCode);
         response.setResponseCode(responseCode);
-        response.setMessage(responseMessage);
+        response.setResponseMessage(responseMessage);
         response.setTimestamp(responseTimestamp);
         return response;
     }

@@ -56,4 +56,7 @@ public class Tiers {
     @OneToMany(mappedBy = "tiers", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<LoyaltyCards> loyaltyCards;
 
+    @OneToMany(mappedBy = "tiers", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<MemberboxMessages> memberBoxMessages;
+
 }

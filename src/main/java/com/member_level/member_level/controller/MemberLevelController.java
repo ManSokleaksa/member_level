@@ -1,6 +1,7 @@
 package com.member_level.member_level.controller;
 
 
+import com.member_level.member_level.constants.AppConstant;
 import com.member_level.member_level.dto.response.ApiResponse;
 import com.member_level.member_level.dto.request.MemberLevelDto;
 import com.member_level.member_level.service.MemberLevelService;
@@ -10,6 +11,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+
 
 @RestController
 @RequestMapping("/api/v1")
@@ -26,9 +29,9 @@ public class MemberLevelController {
         MemberLevelDto memberLevel = memberLevelService.getMemberLevelByCard(cardNumber);
         ApiResponse<MemberLevelDto> response = ApiResponseUtil.createApiResponse(
                 memberLevel,
-                0, // No error
-                1, // Success code
-                "Member level fetched successfully"
+                AppConstant.ERROR_CODE_ZERO, // No error
+                AppConstant.RESPONSE_CODE_ZERO, // Success code
+                AppConstant.MEMBER_LEVEL_FETCH_SUCCESS
         );
         return ResponseEntity.ok(response);
     }
@@ -40,9 +43,9 @@ public class MemberLevelController {
         MemberLevelDto createdMemberLevel = memberLevelService.createMemberLevel(memberLevelDto);
         ApiResponse<MemberLevelDto> response = ApiResponseUtil.createApiResponse(
                 createdMemberLevel,
-                0, // No error
-                1, // Success code
-                "Member level created successfully"
+                AppConstant.ERROR_CODE_ZERO, // No error
+                AppConstant.RESPONSE_CODE_ZERO, // Success code
+                AppConstant.TIER_CREATION_SUCCESSFUL
         );
         return ResponseEntity.ok(response);
     }

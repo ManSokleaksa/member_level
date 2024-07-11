@@ -2,10 +2,14 @@ package com.member_level.member_level.service.impl;
 
 import com.member_level.member_level.dto.request.MemberLevelDto;
 import com.member_level.member_level.entity.LoyaltyCards;
+import com.member_level.member_level.exception.ResourceNotFoundException;
 import com.member_level.member_level.mapper.MemberLevelMapper;
 import com.member_level.member_level.repository.MemberLevelRepository;
 import com.member_level.member_level.service.MemberLevelService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class MemberLevelServiceImpl implements MemberLevelService {
@@ -19,8 +23,8 @@ public class MemberLevelServiceImpl implements MemberLevelService {
 
     @Override
     public MemberLevelDto getMemberLevelByCard(String card) {
-        LoyaltyCards loyaltyCards = memberLevelRepository.findMemberLevelByCardNumber(card);
-                //.orElseThrow(() -> new ResourceNotFoundException("MemberLevel not found with card number: " + card));
+        LoyaltyCards loyaltyCards = memberLevelRepository.findByCardNumber(card)
+                .orElseThrow(() -> new EntityNotFoundException("MemberLevel not found with card number: " + card));
         return MemberLevelMapper.INSTANCE.toDto(loyaltyCards);
     }
 

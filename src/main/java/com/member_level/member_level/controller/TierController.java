@@ -1,5 +1,6 @@
 package com.member_level.member_level.controller;
 
+import com.member_level.member_level.constants.AppConstant;
 import com.member_level.member_level.dto.response.ApiResponse;
 import com.member_level.member_level.dto.request.TierDto;
 import com.member_level.member_level.service.TierService;
@@ -25,9 +26,9 @@ public class TierController {
         List<TierDto> getAllTiers = tierService.getAllTiers();
         ApiResponse<List<TierDto>> response = ApiResponseUtil.createApiResponse(
                 getAllTiers,
-                0, // No error
-                1, // Success code
-                "Member level created successfully"
+                AppConstant.ERROR_CODE_ZERO, // No error
+                AppConstant.RESPONSE_CODE_ZERO, // Success code
+                AppConstant.TIER_FETCH_SUCCESS
         );
         return ResponseEntity.ok(response);
     }
@@ -40,9 +41,9 @@ public class TierController {
         TierDto createTier = tierService.createTier(tierDto);
         ApiResponse<TierDto> response = ApiResponseUtil.createApiResponse(
                 createTier,
-                0, // No error
-                1, // Success code
-                "Member level created successfully"
+                AppConstant.ERROR_CODE_ZERO, // No error
+                AppConstant.RESPONSE_CODE_ZERO, // Success code
+                AppConstant.TIER_FETCH_SUCCESS
         );
         return ResponseEntity.ok(response);
     }

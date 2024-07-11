@@ -13,7 +13,7 @@ public class ApiResponse<T> {
     private T data;
     private Integer errorCode;
     private Integer responseCode;
-    private String message;
+    private String responseMessage;
     private Long timestamp;
 
     // Getters and Setters
