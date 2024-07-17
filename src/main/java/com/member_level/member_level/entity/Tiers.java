@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -17,8 +18,10 @@ import java.util.List;
 @Table(name = "tiers")
 public class Tiers {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @UuidGenerator
+    @GeneratedValue
+    @Column(nullable = false, updatable = false, unique = true, columnDefinition = "VARCHAR(36)")
+    private String id;
 
     @Column(name = "name", nullable = false)
     private String name;

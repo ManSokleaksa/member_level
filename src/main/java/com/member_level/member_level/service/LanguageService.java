@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface LanguageService {
     List<LanguageDto> getAllLanguages();
-    LanguageDto getLanguageById(int id);
+    LanguageDto getLanguageById(String id);
     LanguageDto createLanguage(LanguageDto languageDto);
-    LanguageDto updateLanguage(int id, LanguageDto languageDto);
-    void deleteLanguage(int id);
+    LanguageDto updateLanguage(String id, LanguageDto languageDto);
+    void deleteLanguage(String id);
 }

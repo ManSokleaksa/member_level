@@ -9,6 +9,7 @@ import lombok.Setter;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.sql.Timestamp;
 
@@ -20,24 +21,28 @@ import java.sql.Timestamp;
 @Table(name = "memberbox_messages")
 public class MemberboxMessages {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @UuidGenerator
+    @GeneratedValue
+    @Column(nullable = false, updatable = false, unique = true, columnDefinition = "VARCHAR(36)")
+    private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "language_id", nullable = false)
     private Language language;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tier_id", nullable = false)
+    @JoinColumn(name = "tiers_id", nullable = false)
     private Tiers tiers;
 
-    @Column(name = "message",nullable = false)
+    @Lob
+    @Column(name = "message",nullable = false, columnDefinition = "TEXT")
     private String message;
 
-    @Column(name = "term_and_condition",nullable = false)
+    @Lob
+    @Column(name = "term_and_condition",nullable = false, columnDefinition = "TEXT")
     private String termAndCondition;
 
-    @Column(name = "message_over_bean",nullable = false)
+    @Column(name = "message_over_bean", columnDefinition = "TEXT")
     private String messageOverBean;
 
     @Column(name = "is_deleted", columnDefinition = "boolean default false")
@@ -53,5 +58,15 @@ public class MemberboxMessages {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        if (status == null) {
+            status = true;
+        }
+        if (isDeleted == null) {
+            isDeleted = false;
+        }
+    }
 }
 

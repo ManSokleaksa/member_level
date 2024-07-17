@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -37,7 +36,7 @@ public class LanguageController {
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<LanguageDto>> getLanguageById(
             @Parameter(description = "ID of the language to fetch", required = true)
-            @PathVariable int id) {
+            @PathVariable String id) {
         LanguageDto language = languageService.getLanguageById(id);
         ApiResponse<LanguageDto> response = ApiResponseUtil.createApiResponse(
                 language,
@@ -67,7 +66,7 @@ public class LanguageController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<LanguageDto>> updateLanguage(
             @Parameter(description = "ID of the language to update", required = true)
-            @PathVariable int id,
+            @PathVariable String id,
             @Parameter(description = "Updated language details", required = true)
             @RequestBody LanguageDto languageDto) {
         LanguageDto updatedLanguage = languageService.updateLanguage(id, languageDto);
@@ -84,7 +83,7 @@ public class LanguageController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteLanguage(
             @Parameter(description = "ID of the language to delete", required = true)
-            @PathVariable int id) {
+            @PathVariable String id) {
         languageService.deleteLanguage(id);
         ApiResponse<Void> response = ApiResponseUtil.createApiResponse(
                 null,

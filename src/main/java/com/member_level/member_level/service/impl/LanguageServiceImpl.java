@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +32,7 @@ public class LanguageServiceImpl implements LanguageService {
 
     @Override
     @Transactional(readOnly = true)
-    public LanguageDto getLanguageById(int id) {
+    public LanguageDto getLanguageById(String id) {
         Language language = findLanguageById(id);
         return LanguageMapper.INSTANCE.toDto(language);
     }
@@ -46,7 +47,7 @@ public class LanguageServiceImpl implements LanguageService {
 
     @Override
     @Transactional
-    public LanguageDto updateLanguage(int id, LanguageDto languageDto) {
+    public LanguageDto updateLanguage(String id, LanguageDto languageDto) {
         Language existingLanguage = findLanguageById(id);
 
         existingLanguage.setCode(languageDto.getCode());
@@ -59,13 +60,13 @@ public class LanguageServiceImpl implements LanguageService {
 
     @Override
     @Transactional
-    public void deleteLanguage(int id) {
+    public void deleteLanguage(String id) {
         Language existingLanguage = findLanguageById(id);
         existingLanguage.setIsDeleted(true);
         languageRepository.save(existingLanguage);
     }
 
-    private Language findLanguageById(int id) {
+    private Language findLanguageById(String id) {
         return languageRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Language not found with id: " + id));
     }

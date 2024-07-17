@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.sql.Timestamp;
 
@@ -16,8 +17,10 @@ import java.sql.Timestamp;
 @Table(name = "tier_benefit")
 public class TierBenefit {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @UuidGenerator
+    @GeneratedValue
+    @Column(nullable = false, updatable = false, unique = true, columnDefinition = "VARCHAR(36)")
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "tiers_id")

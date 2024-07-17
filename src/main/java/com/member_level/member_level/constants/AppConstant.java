@@ -34,6 +34,15 @@ public final class AppConstant {
     public static final String LANGUAGE_UPDATE_SUCCESSFUL = "Language update successful.";
     public static final String LANGUAGE_DELETE_SUCCESSFUL = "Language deletion successful.";
 
+    public static final String MEMBERBOX_MESSAGES_FETCH_SUCCESS = "Member box messages fetch successful.";
+    public static final String MEMBERBOX_MESSAGE_FETCH_SUCCESS = "Member box message fetch successful.";
+    public static final String MEMBERBOX_MESSAGE_CREATION_SUCCESSFUL = "Member box message creation successful.";
+    public static final String MEMBERBOX_MESSAGE_UPDATE_SUCCESSFUL = "Member box message update successful.";
+    public static final String MEMBERBOX_MESSAGE_DELETE_SUCCESSFUL = "Member box message delete successful.";
+
+
+
+
 
 
 }

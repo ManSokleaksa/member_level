@@ -9,6 +9,7 @@ import lombok.Setter;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.sql.Timestamp;
 import java.util.Set;
@@ -21,8 +22,10 @@ import java.util.Set;
 @Table(name = "languages")
 public class Language {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @UuidGenerator
+    @GeneratedValue
+    @Column(nullable = false, updatable = false, unique = true, columnDefinition = "VARCHAR(36)")
+    private String id;
 
     @Column(unique = true, nullable = false)
     private String code;

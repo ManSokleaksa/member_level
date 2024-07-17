@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -19,8 +20,10 @@ import java.util.Date;
 @Table(name = "loyalty_cards")
 public class LoyaltyCards {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @UuidGenerator
+    @GeneratedValue
+    @Column(nullable = false, updatable = false, unique = true, columnDefinition = "VARCHAR(36)")
+    private String id;
 
     @Column(name = "card_number", nullable = false, unique = true)
     private String cardNumber;
@@ -28,12 +31,6 @@ public class LoyaltyCards {
     @ManyToOne
     @JoinColumn(name = "tiers_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Tiers tiers;
-
-    @Column(name = "tiers_id")
-    private Integer tiersId;
-
-    @Column(name = "cooperates_id")
-    private Integer cooperatesId;
 
     @Column(name = "beans", nullable = false)
     private int beans;
