@@ -14,13 +14,16 @@ import com.member_level.member_level.util.EntityFinder;
 import com.member_level.member_level.util.Helper;
 import com.member_level.member_level.util.MemberLevelUtil;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MemberLevelServiceImpl implements MemberLevelService {
@@ -36,6 +39,15 @@ public class MemberLevelServiceImpl implements MemberLevelService {
         this.memberLevelRepository = memberLevelRepository;
         this.tierRepository = tierRepository;
         this.memberboxMessagesRepository = memberboxMessagesRepository;
+    }
+
+    @Override
+    @Transactional
+    public List<MemberLevelResponse> getAllMemberLevel() {
+        logger.info("Fetching all member level");
+        return memberLevelRepository.findByIsDeletedFalse().stream()
+                .map(MemberLevelMapper.INSTANCE::toResponseDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -99,6 +111,22 @@ public class MemberLevelServiceImpl implements MemberLevelService {
         setRelatedEntities(loyaltyCards,memberLevelDto.getTiersId());
         LoyaltyCards savedLoyaltyCards = memberLevelRepository.save(loyaltyCards);
         return MemberLevelMapper.INSTANCE.toResponseDto(savedLoyaltyCards);
+    }
+
+    @Override
+    @Transactional
+    public MemberLevelResponse updateMemberLevel(String id, MemberLevelDto memberLevelDto) {
+        logger.info("Updating member level with id: {}",id);
+        LoyaltyCards exitingMemberLevel = EntityFinder.findById(memberLevelRepository, id, "Member Level");
+        setRelatedEntities(exitingMemberLevel,memberLevelDto.getTiersId());
+        exitingMemberLevel.setCardNumber(memberLevelDto.getCardNumber());
+        exitingMemberLevel.setBeans(memberLevelDto.getBeans());
+        exitingMemberLevel.setTierStartDate(memberLevelDto.getTierStartDate());
+        exitingMemberLevel.setTierExpireDate(memberLevelDto.getTierExpireDate());
+        exitingMemberLevel.setCooperateStartDate(memberLevelDto.getCooperateStartDate());
+        exitingMemberLevel.setCooperateStartDate(memberLevelDto.getCooperateEndDate());
+        LoyaltyCards updatedMemberLevels =memberLevelRepository.save(exitingMemberLevel);
+        return MemberLevelMapper.INSTANCE.toResponseDto(updatedMemberLevels);
     }
 
     private void setRelatedEntities(LoyaltyCards loyaltyCards,String tierId) {

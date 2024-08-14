@@ -14,6 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberLevelResponse {
+    private String id;
     private String cardNumber;
     private String tiersId;
     private String cooperatesId;

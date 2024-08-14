@@ -11,7 +11,6 @@ import org.mapstruct.factory.Mappers;
 public interface MemberLevelMapper {
     MemberLevelMapper INSTANCE = Mappers.getMapper(MemberLevelMapper.class);
 
-    @Mapping(target = "id", ignore = true) // Ignoring id field
     @Mapping(target = "createdAt", ignore = true) // Ignoring createdAt field
     @Mapping(target = "updatedAt", ignore = true) // Ignoring updatedAt field
     @Mapping(target = "isDeleted", ignore = true) // Ignoring isDeleted field

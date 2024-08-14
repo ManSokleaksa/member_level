@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 
 
 @RestController
@@ -22,6 +23,19 @@ public class MemberLevelController {
 
     @Autowired
     private MemberLevelService memberLevelService;
+
+    @Operation(summary = "Get All Member Level", description = "Fetch all member level")
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<MemberLevelResponse>>> getAllMemberLevel() {
+        List<MemberLevelResponse> memberLevels = memberLevelService.getAllMemberLevel();
+        ApiResponse<List<MemberLevelResponse>> response = ApiResponseUtil.createApiResponse(
+                memberLevels,
+                AppConstant.ERROR_CODE_ZERO, // No error
+                AppConstant.RESPONSE_CODE_ZERO, // Success code
+                AppConstant.MEMBERBOX_MESSAGES_FETCH_SUCCESS
+        );
+        return ResponseEntity.ok(response);
+    }
 
     @Operation(summary = "Get Member Level by Card Number", description = "Fetch member level details by card number")
     @GetMapping("/member_level")
@@ -47,7 +61,23 @@ public class MemberLevelController {
                 createdMemberLevel,
                 AppConstant.ERROR_CODE_ZERO, // No error
                 AppConstant.RESPONSE_CODE_ZERO, // Success code
-                AppConstant.TIER_CREATION_SUCCESSFUL
+                AppConstant.MEMBER_LEVEL_CREATION_SUCCESSFUL
+        );
+        return ResponseEntity.ok(response);
+    }
+    @Operation(summary = "Update Member Level", description = "Update an existing member level")
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<MemberLevelResponse>> updateMemberboxMessage(
+            @Parameter(description = "ID of the member level to update", required = true)
+            @PathVariable String id,
+            @Parameter(description = "Updated member level ", required = true)
+            @RequestBody MemberLevelDto memberLevelDto) {
+        MemberLevelResponse updatedMemberLevel = memberLevelService.updateMemberLevel(id, memberLevelDto);
+        ApiResponse<MemberLevelResponse> response = ApiResponseUtil.createApiResponse(
+                updatedMemberLevel,
+                AppConstant.ERROR_CODE_ZERO, // No error
+                AppConstant.RESPONSE_CODE_ZERO, // Success code
+                AppConstant.MEMBER_LEVEL_UPDATE_SUCCESSFUL
         );
         return ResponseEntity.ok(response);
     }
