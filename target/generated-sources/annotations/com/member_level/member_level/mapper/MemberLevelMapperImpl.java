@@ -1,13 +1,14 @@
 package com.member_level.member_level.mapper;
 
 import com.member_level.member_level.dto.request.MemberLevelDto;
+import com.member_level.member_level.dto.response.MemberLevelResponse;
 import com.member_level.member_level.entity.LoyaltyCards;
 import com.member_level.member_level.entity.Tiers;
 import javax.annotation.processing.Generated;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-09T14:23:23+0700",
+    date = "2024-07-25T16:06:32+0700",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 22.0.1 (Oracle Corporation)"
 )
 public class MemberLevelMapperImpl implements MemberLevelMapper {
@@ -21,8 +22,6 @@ public class MemberLevelMapperImpl implements MemberLevelMapper {
         LoyaltyCards loyaltyCards = new LoyaltyCards();
 
         loyaltyCards.setCardNumber( dto.getCardNumber() );
-        loyaltyCards.setTiersId( dto.getTiersId() );
-        loyaltyCards.setCooperatesId( dto.getCooperatesId() );
         loyaltyCards.setBeans( dto.getBeans() );
         loyaltyCards.setTierStartDate( dto.getTierStartDate() );
         loyaltyCards.setTierExpireDate( dto.getTierExpireDate() );
@@ -35,26 +34,25 @@ public class MemberLevelMapperImpl implements MemberLevelMapper {
     }
 
     @Override
-    public MemberLevelDto toDto(LoyaltyCards entity) {
+    public MemberLevelResponse toResponseDto(LoyaltyCards entity) {
         if ( entity == null ) {
             return null;
         }
 
-        MemberLevelDto memberLevelDto = new MemberLevelDto();
+        MemberLevelResponse memberLevelResponse = new MemberLevelResponse();
 
-        memberLevelDto.setTiersName( entityTiersName( entity ) );
-        memberLevelDto.setCardNumber( entity.getCardNumber() );
-        memberLevelDto.setTiersId( entity.getTiersId() );
-        memberLevelDto.setCooperatesId( entity.getCooperatesId() );
-        memberLevelDto.setBeans( entity.getBeans() );
-        memberLevelDto.setTierStartDate( entity.getTierStartDate() );
-        memberLevelDto.setTierExpireDate( entity.getTierExpireDate() );
-        memberLevelDto.setCooperateStartDate( entity.getCooperateStartDate() );
-        memberLevelDto.setCooperateEndDate( entity.getCooperateEndDate() );
-        memberLevelDto.setStartDateFirstTopup( entity.getStartDateFirstTopup() );
-        memberLevelDto.setEndDateFirstTopup( entity.getEndDateFirstTopup() );
+        memberLevelResponse.setTiersName( entityTiersName( entity ) );
+        memberLevelResponse.setTiersId( entityTiersId( entity ) );
+        memberLevelResponse.setCardNumber( entity.getCardNumber() );
+        memberLevelResponse.setBeans( entity.getBeans() );
+        memberLevelResponse.setTierStartDate( entity.getTierStartDate() );
+        memberLevelResponse.setTierExpireDate( entity.getTierExpireDate() );
+        memberLevelResponse.setCooperateStartDate( entity.getCooperateStartDate() );
+        memberLevelResponse.setCooperateEndDate( entity.getCooperateEndDate() );
+        memberLevelResponse.setStartDateFirstTopup( entity.getStartDateFirstTopup() );
+        memberLevelResponse.setEndDateFirstTopup( entity.getEndDateFirstTopup() );
 
-        return memberLevelDto;
+        return memberLevelResponse;
     }
 
     private String entityTiersName(LoyaltyCards loyaltyCards) {
@@ -70,5 +68,20 @@ public class MemberLevelMapperImpl implements MemberLevelMapper {
             return null;
         }
         return name;
+    }
+
+    private String entityTiersId(LoyaltyCards loyaltyCards) {
+        if ( loyaltyCards == null ) {
+            return null;
+        }
+        Tiers tiers = loyaltyCards.getTiers();
+        if ( tiers == null ) {
+            return null;
+        }
+        String id = tiers.getId();
+        if ( id == null ) {
+            return null;
+        }
+        return id;
     }
 }

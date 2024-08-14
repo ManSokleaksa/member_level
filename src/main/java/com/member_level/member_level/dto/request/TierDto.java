@@ -10,7 +10,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TierDto {
+
     private String name;
+
     private int beanNeed;
+
     private int level;
 }

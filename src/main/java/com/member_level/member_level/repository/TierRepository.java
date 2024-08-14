@@ -7,4 +7,6 @@ import java.util.UUID;
 
 @Repository
 public interface TierRepository extends JpaRepository<Tiers, String> {
+
+    Tiers findByLevel(int level);
 }

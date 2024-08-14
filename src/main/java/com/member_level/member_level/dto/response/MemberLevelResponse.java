@@ -1,4 +1,4 @@
-package com.member_level.member_level.dto.request;
+package com.member_level.member_level.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -13,12 +13,12 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberLevelDto {
+public class MemberLevelResponse {
     private String cardNumber;
     private String tiersId;
     private String cooperatesId;
+    private String tiersName;
     private int beans;
-
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date tierStartDate;
@@ -42,4 +42,7 @@ public class MemberLevelDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date endDateFirstTopup;
+
+    private String message;
+    private String termCondition;
 }

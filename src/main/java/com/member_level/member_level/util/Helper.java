@@ -1,5 +1,6 @@
 package com.member_level.member_level.util;
 
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -37,4 +38,16 @@ public class Helper {
         mapAsString.delete(mapAsString.length() - 2, mapAsString.length());
         return mapAsString.toString();
     }
+    public static String replacePlaceHolders(String message, String tier, String memberPercentages, String dob, int beans, Date tierExpireDate){
+        if (message == null){
+            return null;
+        }
+
+        message = message.replace("[tier]",tier);
+        message = message.replace("[member_percentage]",memberPercentages);
+        message = message.replace("[golden_member_expired_date]",tierExpireDate.toString());
+        message = message.replace("[dob]",dob);
+        return message;
+    }
+
 }

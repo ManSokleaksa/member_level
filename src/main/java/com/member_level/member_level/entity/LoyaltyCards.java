@@ -29,7 +29,7 @@ public class LoyaltyCards {
     private String cardNumber;
 
     @ManyToOne
-    @JoinColumn(name = "tiers_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "tiers_id", referencedColumnName = "id",nullable = false)
     private Tiers tiers;
 
     @Column(name = "beans", nullable = false)
