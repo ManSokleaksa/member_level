@@ -1,5 +1,9 @@
 package com.member_level.member_level.util;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
 
@@ -7,6 +11,7 @@ import java.util.Map;
  * The type Helper.
  */
 public class Helper {
+    LocalDateTime now = LocalDateTime.now();
     /**
      * Is numeric boolean.
      *
@@ -49,5 +54,22 @@ public class Helper {
         message = message.replace("[dob]",dob);
         return message;
     }
+    public static Date addMonthsToDate(Date date, int months) {
+        // Convert Date to LocalDate
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        // Add months to the LocalDate
+        localDate = localDate.plusMonths(months);
+
+        // Set the time to 23:59:59 in UTC
+        LocalDateTime localDateTime = localDate.atTime(23, 59, 59);
+
+        // Convert LocalDateTime to ZonedDateTime in UTC
+        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.of("UTC"));
+
+        // Convert ZonedDateTime back to Date
+        return Date.from(zonedDateTime.toInstant());
+    }
+
 
 }

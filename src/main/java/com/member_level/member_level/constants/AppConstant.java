@@ -40,7 +40,9 @@ public final class AppConstant {
     public static final String MEMBERBOX_MESSAGE_UPDATE_SUCCESSFUL = "Member box message update successful.";
     public static final String MEMBERBOX_MESSAGE_DELETE_SUCCESSFUL = "Member box message delete successful.";
 
-
+    //kafka constant
+    public static final String TOPIC_NAME = "transaction";
+    public static final String GROUP_ID = "transaction-group";
 
 
 

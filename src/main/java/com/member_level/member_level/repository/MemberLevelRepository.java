@@ -18,4 +18,5 @@ public interface MemberLevelRepository extends JpaRepository<LoyaltyCards,String
 
     List<LoyaltyCards> findByIsDeletedFalse();
 
+
 }

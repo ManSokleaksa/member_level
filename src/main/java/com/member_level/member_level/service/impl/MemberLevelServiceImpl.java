@@ -1,6 +1,10 @@
 package com.member_level.member_level.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.member_level.member_level.constants.AppConstant;
 import com.member_level.member_level.dto.request.MemberLevelDto;
+import com.member_level.member_level.dto.request.TransactionMessage;
 import com.member_level.member_level.dto.response.MemberLevelResponse;
 import com.member_level.member_level.entity.LoyaltyCards;
 import com.member_level.member_level.entity.MemberboxMessages;
@@ -11,19 +15,26 @@ import com.member_level.member_level.repository.MemberboxMessagesRepository;
 import com.member_level.member_level.repository.TierRepository;
 import com.member_level.member_level.service.MemberLevelService;
 import com.member_level.member_level.util.EntityFinder;
-import com.member_level.member_level.util.Helper;
 import com.member_level.member_level.util.MemberLevelUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
+
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.member_level.member_level.util.Helper.addMonthsToDate;
+import static com.member_level.member_level.util.Helper.isNumeric;
 
 @Service
 public class MemberLevelServiceImpl implements MemberLevelService {
@@ -33,12 +44,14 @@ public class MemberLevelServiceImpl implements MemberLevelService {
     private final MemberLevelRepository memberLevelRepository;
     private final TierRepository tierRepository;
     private final MemberboxMessagesRepository memberboxMessagesRepository;
+    private final ObjectMapper objectMapper;
 
 
-    public MemberLevelServiceImpl(MemberLevelRepository memberLevelRepository, TierRepository tierRepository, MemberboxMessagesRepository memberboxMessagesRepository) {
+    public MemberLevelServiceImpl(MemberLevelRepository memberLevelRepository, TierRepository tierRepository, MemberboxMessagesRepository memberboxMessagesRepository, ObjectMapper objectMapper) {
         this.memberLevelRepository = memberLevelRepository;
         this.tierRepository = tierRepository;
         this.memberboxMessagesRepository = memberboxMessagesRepository;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -128,7 +141,62 @@ public class MemberLevelServiceImpl implements MemberLevelService {
         LoyaltyCards updatedMemberLevels =memberLevelRepository.save(exitingMemberLevel);
         return MemberLevelMapper.INSTANCE.toResponseDto(updatedMemberLevels);
     }
+    @KafkaListener(topics = "transaction",groupId = AppConstant.GROUP_ID)
+    @Transactional
+    public void memberLevelUpgrade(@Payload String message){
+        logger.info(String.format("message received -> %s",message));
 
+        try{
+            // Deserialize to DTO
+            TransactionMessage transactionMessage = objectMapper.readValue(message, TransactionMessage.class);
+            String cardNumber = transactionMessage.getCardNumber();
+            int grandTotal = transactionMessage.getGrandTotal().intValue();
+            logger.info("Get the integer value of a variable ->"+grandTotal);
+
+            // Check if the card exits in loyalty card
+            LoyaltyCards loyaltyCards = memberLevelRepository.findByCardNumber(cardNumber)
+                    .orElseThrow(() -> new EntityNotFoundException("MemberLevel not found with card number: " + cardNumber));
+            loyaltyCards.getTiers().getLevel();
+            // Get the tier based on the loyalty card's level
+            Tiers tiers = tierRepository.findByLevel(2);
+            if (tiers == null) {
+                throw new EntityNotFoundException("Tier not found for level: " + loyaltyCards.getTiers().getLevel());
+            }
+            logger.info("findByLevel -> "+tiers.getBeanNeed());
+
+            // Add exiting beans with new beans
+            int exitingBeans = loyaltyCards.getBeans();
+            int totalBeans = exitingBeans + grandTotal;
+
+            // Check exiting id in LoyaltyCard
+            LoyaltyCards exitingMemberLevel = EntityFinder.findById(memberLevelRepository, loyaltyCards.getId(), "Member Level");
+            exitingMemberLevel.setBeans(totalBeans);
+            memberLevelRepository.save(exitingMemberLevel);
+
+            logger.info("bean update -> "+tiers.getBeanNeed());
+            logger.info("exiting bean -> "+exitingMemberLevel.getBeans());
+
+            // Check BROWN Normal member bean >= 100
+            if (exitingMemberLevel.getBeans() >= tiers.getBeanNeed()){
+                exitingMemberLevel.setTiers(tiers);
+                // Restart bean to 0 after upgrading to BROWN Golden
+                exitingMemberLevel.setBeans(0);
+                exitingMemberLevel.setTierExpireDate(addMonthsToDate(new Date(),6));
+                memberLevelRepository.save(exitingMemberLevel);
+            }
+            ZonedDateTime zonedNow = ZonedDateTime.now();
+            System.out.println("Current Date and Time with Time Zone: " + zonedNow);
+            System.out.println("Golden expire date: " + exitingMemberLevel.getTierExpireDate());
+
+            // Check BROWN Golden member
+//            if (exitingMemberLevel.getBeans() >= tiers.getBeanNeed() ){
+//
+//            }
+        }catch(JsonProcessingException e){
+            logger.error("Error processing JSON message: {}",message,e);
+            // Handle error, potentially send to a dead-letter topic
+        }
+    }
     private void setRelatedEntities(LoyaltyCards loyaltyCards,String tierId) {
         Tiers tiers = EntityFinder.findById(tierRepository, tierId, "Tier");
         logger.info("get tiers data: {}", tiers);
